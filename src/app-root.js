@@ -1,10 +1,31 @@
-import {LitElement, html, css} from 'lit';
+import {LitElement, html} from 'lit';
+import {store} from './store';
+import {selectEmployees} from './store/selectors';
 
 class AppRoot extends LitElement {
-  static styles = css``;
+  static properties = {
+    employees: {type: Array},
+  };
+
+  constructor() {
+    super();
+    this.employees = selectEmployees(store.getState());
+  }
 
   render() {
-    return html` <main>TEST</main> `;
+    return html`
+      <div>
+        <ul>
+          ${this.employees.map(
+            (employee) => html`
+              <li>
+                ${employee.id} - ${employee.firstName} - ${employee.position}
+              </li>
+            `
+          )}
+        </ul>
+      </div>
+    `;
   }
 }
 
