@@ -5,6 +5,7 @@ class AppNavbar extends LitElement {
     nav {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       background: #fff;
       padding: 0.5rem;
       margin: 2rem 1.3rem;

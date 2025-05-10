@@ -1,5 +1,7 @@
 import {LitElement, html, css} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
+import {store} from '../store/index.js';
+import {deleteEmployee} from '../store/actions.js';
 
 class EmployeeList extends LitElement {
   static styles = css`
@@ -65,6 +67,10 @@ class EmployeeList extends LitElement {
     ];
   }
 
+  _handleDelete(id) {
+    store.dispatch(deleteEmployee(id));
+  }
+
   render() {
     return html`
       <h3>Employee List</h3>
@@ -99,7 +105,10 @@ class EmployeeList extends LitElement {
                             height="20"
                           ></iconify-icon>
                         </button>
-                        <button title="Sil">
+                        <button
+                          title="Sil"
+                          @click="${() => this._handleDelete(employee.id)}"
+                        >
                           <iconify-icon
                             icon="mdi:delete"
                             width="20"
