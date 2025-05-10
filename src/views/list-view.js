@@ -11,9 +11,22 @@ class ListView extends LitElement {
   constructor() {
     super();
     this.employees = selectEmployees(store.getState());
-    this.unsubscribe = store.subscribe(() => {
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    this._unsubscribe = store.subscribe(() => {
       this.employees = selectEmployees(store.getState());
     });
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+
+    if (this._unsubscribe) {
+      this._unsubscribe();
+    }
   }
 
   render() {

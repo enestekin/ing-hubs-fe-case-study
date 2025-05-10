@@ -3,12 +3,13 @@ import {repeat} from 'lit/directives/repeat.js';
 
 class EmployeeList extends LitElement {
   static styles = css`
-    h3 {
-      color: #ff9900;
+    .employee-list-container {
+      padding: 0 3rem;
     }
 
-    .employee-list-container {
-      padding: 3rem;
+    h3 {
+      color: #ff9900;
+      font-weight: 500;
     }
 
     table {
