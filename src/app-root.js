@@ -1,9 +1,15 @@
-import {LitElement, html} from 'lit';
-import './views/list-view.js';
+import {html, LitElement} from 'lit';
+import './router.js';
+import './components/app-navbar.js';
 
 class AppRoot extends LitElement {
   render() {
-    return html` <list-view></list-view> `;
+    return html`
+      <app-navbar></app-navbar>
+      <main>
+        <router-outlet></router-outlet>
+      </main>
+    `;
   }
 }
 
