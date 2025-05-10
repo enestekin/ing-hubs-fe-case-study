@@ -4,12 +4,15 @@ import {repeat} from 'lit/directives/repeat.js';
 class EmployeeList extends LitElement {
   static styles = css`
     .employee-list-container {
-      padding: 0 3rem;
+      background-color: #fff;
+      border-radius: 5px;
+      margin: 0 3rem;
     }
 
     h3 {
       color: #ff9900;
       font-weight: 500;
+      padding-left: 3rem;
     }
 
     table {
@@ -19,10 +22,15 @@ class EmployeeList extends LitElement {
 
     th,
     td {
-      padding: 8px;
+      padding: 1rem;
       text-align: left;
       border-bottom: 1px solid #ddd;
       font-weight: normal;
+    }
+
+    tbody tr:last-child td,
+    tbody tr:only-child td {
+      border-bottom: none;
     }
 
     .employee-list-container__header {
@@ -30,8 +38,10 @@ class EmployeeList extends LitElement {
     }
 
     button {
+      background-color: transparent;
+      border: none;
       cursor: pointer;
-      margin-right: 5px;
+      color: #ff9900;
     }
   `;
 
@@ -57,9 +67,8 @@ class EmployeeList extends LitElement {
 
   render() {
     return html`
+      <h3>Employee List</h3>
       <div class="employee-list-container">
-        <h3>Employee List</h3>
-
         <table>
           <thead>
             <tr class="employee-list-container__header">
@@ -83,8 +92,20 @@ class EmployeeList extends LitElement {
                           `
                         )}
                       <td>
-                        <button>Düzenle</button>
-                        <button>Sil</button>
+                        <button title="Düzenle">
+                          <iconify-icon
+                            icon="mdi:pencil"
+                            width="20"
+                            height="20"
+                          ></iconify-icon>
+                        </button>
+                        <button title="Sil">
+                          <iconify-icon
+                            icon="mdi:delete"
+                            width="20"
+                            height="20"
+                          ></iconify-icon>
+                        </button>
                       </td>
                     </tr>
                   `
