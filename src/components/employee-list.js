@@ -2,6 +2,7 @@ import {LitElement, html, css} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
 import {store} from '../store/index.js';
 import {deleteEmployee} from '../store/actions.js';
+import './confirm-modal.js';
 
 class EmployeeList extends LitElement {
   static styles = css`
@@ -50,6 +51,8 @@ class EmployeeList extends LitElement {
   static properties = {
     employees: {type: Array},
     columns: {type: Array},
+    showModal: {type: Boolean},
+    selectedEmployee: {type: Object},
   };
 
   constructor() {
@@ -69,6 +72,23 @@ class EmployeeList extends LitElement {
 
   _handleDelete(id) {
     store.dispatch(deleteEmployee(id));
+  }
+
+  _confirmDelete(employee) {
+    this.selectedEmployee = employee;
+    this.showModal = true;
+  }
+
+  _cancelDelete() {
+    this.showModal = false;
+    this.selectedEmployee = null;
+  }
+
+  _proceedDelete() {
+    if (this.selectedEmployee) {
+      store.dispatch(deleteEmployee(this.selectedEmployee.id));
+    }
+    this._cancelDelete();
   }
 
   render() {
@@ -107,7 +127,7 @@ class EmployeeList extends LitElement {
                         </button>
                         <button
                           title="Sil"
-                          @click="${() => this._handleDelete(employee.id)}"
+                          @click="${() => this._confirmDelete(employee)}"
                         >
                           <iconify-icon
                             icon="mdi:delete"
@@ -129,6 +149,15 @@ class EmployeeList extends LitElement {
           </tbody>
         </table>
       </div>
+
+      <confirm-modal
+        .open="${this.showModal}"
+        .message="Selected employee record of ${this.selectedEmployee
+          ? `${this.selectedEmployee.firstName} ${this.selectedEmployee.lastName} will be deleted`
+          : ''}"
+        @cancel="${this._cancelDelete}"
+        @proceed="${this._proceedDelete}"
+      ></confirm-modal>
     `;
   }
 }
