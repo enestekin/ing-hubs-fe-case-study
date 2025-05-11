@@ -31,6 +31,7 @@ class EmployeeList extends LitElement {
       margin: 0 2rem;
       overflow-x: auto;
       font-size: 10px;
+      white-space: nowrap;
     }
 
     h3 {
