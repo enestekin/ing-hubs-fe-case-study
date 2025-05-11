@@ -4,6 +4,7 @@ import {
   DELETE_EMPLOYEE,
   SET_EMPLOYEES,
   SET_PAGE,
+  SET_VIEW_MODE,
 } from './actions.js';
 
 import {mockEmployees} from '../data/mock-employees.js';
@@ -12,6 +13,7 @@ const initialState = {
   employees: mockEmployees,
   currentPage: 1,
   itemsPerPage: 10,
+  viewMode: 'table',
 };
 
 export const employeeReducer = (state = initialState, action) => {
@@ -46,6 +48,12 @@ export const employeeReducer = (state = initialState, action) => {
       return {
         ...state,
         currentPage: action.payload,
+      };
+
+    case SET_VIEW_MODE:
+      return {
+        ...state,
+        viewMode: action.payload,
       };
 
     default:

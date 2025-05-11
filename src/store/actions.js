@@ -3,6 +3,7 @@ export const UPDATE_EMPLOYEE = 'UPDATE_EMPLOYEE';
 export const DELETE_EMPLOYEE = 'DELETE_EMPLOYEE';
 export const SET_EMPLOYEES = 'SET_EMPLOYEES';
 export const SET_PAGE = 'SET_PAGE';
+export const SET_VIEW_MODE = 'SET_VIEW_MODE';
 
 export const setEmployees = (employees) => ({
   type: SET_EMPLOYEES,
@@ -27,4 +28,9 @@ export const deleteEmployee = (id) => ({
 export const setPage = (page) => ({
   type: SET_PAGE,
   payload: page,
+});
+
+export const setViewMode = (viewMode) => ({
+  type: SET_VIEW_MODE,
+  payload: viewMode,
 });

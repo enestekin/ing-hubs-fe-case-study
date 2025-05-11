@@ -1,13 +1,19 @@
 import {LitElement, html, css} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
 import {store} from '../store/index.js';
-import {deleteEmployee, setPage} from '../store/actions.js';
+import {deleteEmployee, setPage, setViewMode} from '../store/actions.js';
 import {getPaginatedEmployees, getTotalPages} from '../helpers/index.js';
 import './confirm-modal.js';
 
 class EmployeeList extends LitElement {
   static styles = css`
-    .employee-list-container {
+    .employee-list__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 3rem;
+    }
+    .employee-list__table {
       background-color: #fff;
       border-radius: 5px;
       margin: 0 3rem;
@@ -16,7 +22,6 @@ class EmployeeList extends LitElement {
     h3 {
       color: #ff9900;
       font-weight: 500;
-      padding-left: 3rem;
     }
 
     table {
@@ -37,7 +42,7 @@ class EmployeeList extends LitElement {
       border-bottom: none;
     }
 
-    .employee-list-container__header {
+    .employee-list__table--header {
       color: #ff9900;
     }
 
@@ -76,6 +81,45 @@ class EmployeeList extends LitElement {
       color: #aaa;
       cursor: not-allowed;
     }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin: 1rem 3rem;
+    }
+
+    .card {
+      display: flex;
+      gap: 5px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      p {
+        margin: 0;
+      }
+    }
+
+    .card-grid__buttons {
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 600px) {
+      .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 900px) {
+      .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
   `;
 
   static properties = {
@@ -85,6 +129,7 @@ class EmployeeList extends LitElement {
     selectedEmployee: {type: Object},
     totalPages: {type: Number},
     currentPage: {type: Number},
+    viewMode: {type: String},
   };
 
   constructor() {
@@ -92,6 +137,7 @@ class EmployeeList extends LitElement {
     this._updateState();
     this.showModal = false;
     this.selectedEmployee = null;
+    this.viewMode = 'table';
     this.unsubscribe = store.subscribe(() => this._updateState());
     this.columns = [
       {key: 'firstName', label: 'Adı'},
@@ -116,6 +162,7 @@ class EmployeeList extends LitElement {
     this.employees = getPaginatedEmployees(state);
     this.totalPages = getTotalPages(state);
     this.currentPage = state.currentPage;
+    this.viewMode = state.viewMode;
   }
 
   _handleDelete(id) {
@@ -143,13 +190,12 @@ class EmployeeList extends LitElement {
     store.dispatch(setPage(p));
   }
 
-  render() {
+  renderTableView() {
     return html`
-      <h3>Employee List</h3>
-      <div class="employee-list-container">
+      <div class="employee-list__table">
         <table>
           <thead>
-            <tr class="employee-list-container__header">
+            <tr class="employee-list__table--header">
               ${this.columns.map((column) => html`<th>${column.label}</th>`)}
             </tr>
             <tr></tr>
@@ -177,10 +223,7 @@ class EmployeeList extends LitElement {
                             height="20"
                           ></iconify-icon>
                         </button>
-                        <button
-                          title="Sil"
-                          @click="${() => this._confirmDelete(employee)}"
-                        >
+                        <button @click="${() => this._confirmDelete(employee)}">
                           <iconify-icon
                             icon="mdi:delete"
                             width="20"
@@ -201,6 +244,75 @@ class EmployeeList extends LitElement {
           </tbody>
         </table>
       </div>
+    `;
+  }
+
+  renderListView() {
+    return html`
+      <div class="card-grid">
+        ${this.employees.map(
+          (employee) => html`
+            <div class="card">
+              <p><strong>${employee.firstName} ${employee.lastName}</strong></p>
+              <p>Phone: ${employee.phone}</p>
+              <p>Email: ${employee.email}</p>
+              <p>Departmant: ${employee.department}</p>
+              <p>Position: ${employee.position}</p>
+              <p>Date of Employment: ${employee.dateOfEmployment}</p>
+              <p>Date of Birth: ${employee.dateOfBirth}</p>
+              <div class="card-grid___buttons">
+                <button>
+                  <iconify-icon
+                    icon="mdi:pencil"
+                    width="20"
+                    height="20"
+                  ></iconify-icon>
+                </button>
+                <button @click="${() => this._confirmDelete(employee)}">
+                  <iconify-icon
+                    icon="mdi:delete"
+                    width="20"
+                    height="20"
+                  ></iconify-icon>
+                </button>
+              </div>
+            </div>
+          `
+        )}
+      </div>
+    `;
+  }
+
+  render() {
+    return html`
+      <div class="employee-list__header">
+        <h3>Employee List</h3>
+        <div>
+          <button
+            @click=${() => store.dispatch(setViewMode('table'))}
+            ?selected=${this.viewMode === 'table'}
+          >
+            <iconify-icon
+              icon="mdi:view-list"
+              width="20"
+              height="20"
+            ></iconify-icon>
+          </button>
+          <button
+            @click=${() => store.dispatch(setViewMode('list'))}
+            ?selected=${this.viewMode === 'list'}
+          >
+            <iconify-icon
+              icon="mdi:view-grid"
+              width="20"
+              height="20"
+            ></iconify-icon>
+          </button>
+        </div>
+      </div>
+      ${this.viewMode === 'table'
+        ? this.renderTableView()
+        : this.renderListView()}
 
       <div class="pagination">
         <button
