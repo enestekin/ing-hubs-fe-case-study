@@ -1,18 +1,12 @@
 import {LitElement, html, css} from 'lit';
 import {store} from '../store/index.js';
+import {setLanguage} from '../store/actions.js';
+import {i18n} from '../locales/index.js';
 
 class AppNavbar extends LitElement {
   static properties = {
     viewMode: {type: String},
   };
-
-  constructor() {
-    super();
-    this.viewMode = store.getState().viewMode;
-    store.subscribe(() => {
-      this.viewMode = store.getState().viewMode;
-    });
-  }
 
   static styles = css`
     header {
@@ -45,20 +39,56 @@ class AppNavbar extends LitElement {
       nav {
         font-size: 1rem;
       }
+
+      button {
+        border: none;
+        background-color: #fff;
+        cursor: pointer;
+      }
   `;
 
+  constructor() {
+    super();
+    const state = store.getState();
+    this.viewMode = state.viewMode;
+    this.lang = state.language;
+
+    store.subscribe(() => {
+      const state = store.getState();
+      this.viewMode = state.viewMode;
+      this.lang = state.language;
+      this.requestUpdate();
+    });
+  }
+
+  toggleLang() {
+    const newLang = this.lang === 'en' ? 'tr' : 'en';
+    store.dispatch(setLanguage(newLang));
+  }
+
   render() {
+    const t = i18n[this.lang];
+
     return html`
       <header>
         <p>
-          Employee List (${this.viewMode === 'table' ? 'Table' : 'List'} View)
+          ${t.employeeList} (${this.viewMode === 'table' ? t.table : t.list}
+          ${t.viewLabel})
         </p>
         <nav>
-          <a href="/">ING</a>
+          <a href="/">${t.company}</a>
           <div>
-            <a href="/">Employees</a>
-            <a href="/add">+ Add New</a>
-            <button>TR|EN</button>
+            <a href="/">${t.employees}</a>
+            <a href="/add">${t.addNew}</a>
+            <button @click=${this.toggleLang}>
+              <iconify-icon
+                icon="${this.lang === 'en'
+                  ? 'twemoji:flag-united-kingdom'
+                  : 'twemoji:flag-turkey'}"
+                width="24"
+                height="24"
+              ></iconify-icon>
+            </button>
           </div>
         </nav>
       </header>

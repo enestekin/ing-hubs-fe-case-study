@@ -1,4 +1,6 @@
 import {LitElement, html, css} from 'lit';
+import {i18n} from '../locales/index.js';
+import {store} from '../store/index.js';
 
 class ConfirmModal extends LitElement {
   static styles = css`
@@ -74,6 +76,15 @@ class ConfirmModal extends LitElement {
     super();
     this.open = false;
     this.message = '';
+    this.lang = store.getState().language;
+
+    store.subscribe(() => {
+      const state = store.getState();
+      if (this.lang !== state.language) {
+        this.lang = state.language;
+        this.requestUpdate();
+      }
+    });
   }
 
   _handleCancel() {
@@ -85,6 +96,11 @@ class ConfirmModal extends LitElement {
   }
 
   render() {
+    const t = i18n[this.lang];
+    const dynamicMessage =
+      this.message ||
+      t.deleteConfirmationMessage(this.firstName, this.lastName);
+
     if (!this.open) return html``;
     return html`
       <div class="modal-overlay">
@@ -92,14 +108,14 @@ class ConfirmModal extends LitElement {
           <button class="close-button" @click="${this._handleCancel}">
             &times;
           </button>
-          <h2>Are you sure ?</h2>
-          <p>${this.message}</p>
+          <h2>${t.areYouSure}</h2>
+          <p>${dynamicMessage}</p>
           <div class="modal-buttons">
             <button class="proceed" @click="${this._handleProceed}">
-              Proceed
+              ${t.proceed}
             </button>
             <button class="cancel" @click="${this._handleCancel}">
-              Cancel
+              ${t.cancel}
             </button>
           </div>
         </div>

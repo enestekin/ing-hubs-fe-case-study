@@ -5,6 +5,7 @@ export const SET_EMPLOYEES = 'SET_EMPLOYEES';
 export const SET_PAGE = 'SET_PAGE';
 export const SET_VIEW_MODE = 'SET_VIEW_MODE';
 export const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY';
+export const SET_LANGUAGE = 'SET_LANGUAGE';
 
 export const setEmployees = (employees) => ({
   type: SET_EMPLOYEES,
@@ -39,4 +40,9 @@ export const setViewMode = (viewMode) => ({
 export const setSearchQuery = (query) => ({
   type: SET_SEARCH_QUERY,
   payload: query,
+});
+
+export const setLanguage = (language) => ({
+  type: SET_LANGUAGE,
+  payload: language,
 });

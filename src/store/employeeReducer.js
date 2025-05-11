@@ -6,6 +6,7 @@ import {
   SET_PAGE,
   SET_VIEW_MODE,
   SET_SEARCH_QUERY,
+  SET_LANGUAGE,
 } from './actions.js';
 
 import {mockEmployees} from '../data/mock-employees.js';
@@ -16,6 +17,7 @@ const initialState = {
   itemsPerPage: 10,
   viewMode: 'table',
   searchQuery: '',
+  language: 'en',
 };
 
 export const employeeReducer = (state = initialState, action) => {
@@ -62,6 +64,13 @@ export const employeeReducer = (state = initialState, action) => {
       return {
         ...state,
         searchQuery: action.payload,
+      };
+
+    case SET_LANGUAGE:
+      document.documentElement.lang = action.payload;
+      return {
+        ...state,
+        language: action.payload,
       };
 
     default:

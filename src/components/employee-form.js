@@ -4,6 +4,7 @@ import {addEmployee, updateEmployee} from '../store/actions.js';
 import {validateEmployee} from '../helpers/index.js';
 import {Router} from '@vaadin/router';
 import '../components/confirm-modal.js';
+import {i18n} from '../locales/index.js';
 
 class EmployeeForm extends LitElement {
   static properties = {
@@ -59,6 +60,16 @@ class EmployeeForm extends LitElement {
     this.employee = {};
     this.isEdit = false;
     this.showModal = false;
+
+    this.lang = store.getState().language;
+
+    store.subscribe(() => {
+      const state = store.getState();
+      if (this.lang !== state.language) {
+        this.lang = state.language;
+        this.requestUpdate();
+      }
+    });
   }
 
   _handleInput(e) {
@@ -90,13 +101,14 @@ class EmployeeForm extends LitElement {
   }
 
   render() {
+    const t = i18n[this.lang];
     const emp = this.employee;
     return html`
       <div>
-        <h3>${this.isEdit ? 'Edit' : 'Add'} Employee</h3>
+        <h3>${this.isEdit ? t.editEmployee : t.addEmployee}</h3>
 
         <form @submit="${this._handleSubmit}">
-          <label>First Name</label>
+          <label>${t.firstName}</label>
           <input
             name="firstName"
             .value=${emp.firstName || ''}
@@ -104,7 +116,7 @@ class EmployeeForm extends LitElement {
             required
           />
 
-          <label>Last Name</label>
+          <label>${t.lastName}</label>
           <input
             name="lastName"
             .value=${emp.lastName || ''}
@@ -112,7 +124,7 @@ class EmployeeForm extends LitElement {
             required
           />
 
-          <label>Date of Employment</label>
+          <label>${t.dateOfEmployment}</label>
           <input
             type="date"
             name="dateOfEmployment"
@@ -121,7 +133,7 @@ class EmployeeForm extends LitElement {
             required
           />
 
-          <label>Date of Birth</label>
+          <label>${t.dateOfBirth}</label>
           <input
             type="date"
             name="dateOfBirth"
@@ -130,7 +142,7 @@ class EmployeeForm extends LitElement {
             required
           />
 
-          <label>Phone</label>
+          <label>${t.phone}</label>
           <input
             name="phone"
             .value=${emp.phone || ''}
@@ -138,7 +150,7 @@ class EmployeeForm extends LitElement {
             required
           />
 
-          <label>Email</label>
+          <label>${t.email}</label>
           <input
             type="email"
             name="email"
@@ -147,40 +159,41 @@ class EmployeeForm extends LitElement {
             required
           />
 
-          <label>Department</label>
+          <label>${t.department}</label>
           <select
             name="department"
             .value=${emp.department || ''}
             @change=${this._handleInput}
             required
           >
-            <option value="">Select</option>
-            <option value="Analytics">Analytics</option>
-            <option value="Tech">Tech</option>
+            <option value="">${t.select}</option>
+            <option value="Analytics">${t.analytics}</option>
+            <option value="Tech">${t.tech}</option>
           </select>
 
-          <label>Position</label>
+          <label>${t.position}</label>
           <select
             name="position"
             .value=${emp.position || ''}
             @change=${this._handleInput}
             required
           >
-            <option value="">Select</option>
-            <option value="Junior">Junior</option>
-            <option value="Medior">Medior</option>
-            <option value="Senior">Senior</option>
+            <option value="">${t.select}</option>
+            <option value="Junior">${t.junior}</option>
+            <option value="Medior">${t.medior}</option>
+            <option value="Senior">${t.senior}</option>
           </select>
 
-          <button>${this.isEdit ? 'Update' : 'Create'} Employee</button>
+          <button>${t.save}</button>
         </form>
       </div>
 
       <confirm-modal
         .open=${this.showModal}
-        .message="Selected employee record of ${this.employee
-          ? `${this.employee.firstName} ${this.employee.lastName} will be edited`
-          : ''}"
+        .message=${t.deleteConfirmationMessage(
+          this.employee.firstName,
+          this.employee.lastName
+        )}
         @cancel=${() => {
           this.showModal = false;
           this.requestUpdate();

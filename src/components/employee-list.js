@@ -10,6 +10,7 @@ import {
 import {getPaginatedEmployees, getTotalPages} from '../helpers/index.js';
 import {Router} from '@vaadin/router';
 import './confirm-modal.js';
+import {i18n} from '../locales/index.js';
 
 class EmployeeList extends LitElement {
   static styles = css`
@@ -119,6 +120,7 @@ class EmployeeList extends LitElement {
       p {
         margin: 0;
       }
+      font-size: 13px;
     }
 
     .card-grid__buttons {
@@ -168,17 +170,18 @@ class EmployeeList extends LitElement {
     this.showModal = false;
     this.selectedEmployee = null;
     this.viewMode = 'table';
+    this.lang = 'en';
     this.unsubscribe = store.subscribe(() => this._updateState());
     this.columns = [
-      {key: 'firstName', label: 'Adı'},
-      {key: 'lastName', label: 'Soyadı'},
-      {key: 'dateOfEmployment', label: 'İşe Giriş Tarihi'},
-      {key: 'dateOfBirth', label: 'Doğum Tarihi'},
-      {key: 'phone', label: 'Telefon'},
-      {key: 'email', label: 'E-posta'},
-      {key: 'department', label: 'Departman'},
-      {key: 'position', label: 'Pozisyon'},
-      {key: 'actions', label: 'İşlemler'},
+      {key: 'firstName', labelKey: 'firstName'},
+      {key: 'lastName', labelKey: 'lastName'},
+      {key: 'dateOfEmployment', labelKey: 'dateOfEmployment'},
+      {key: 'dateOfBirth', labelKey: 'dateOfBirth'},
+      {key: 'phone', labelKey: 'phone'},
+      {key: 'email', labelKey: 'email'},
+      {key: 'department', labelKey: 'department'},
+      {key: 'position', labelKey: 'position'},
+      {key: 'actions', labelKey: 'actions'},
     ];
   }
 
@@ -193,6 +196,7 @@ class EmployeeList extends LitElement {
     this.totalPages = getTotalPages(state);
     this.currentPage = state.currentPage;
     this.viewMode = state.viewMode;
+    this.lang = state.language;
   }
 
   _handleDelete(id) {
@@ -229,12 +233,16 @@ class EmployeeList extends LitElement {
   }
 
   renderTableView() {
+    const t = i18n[this.lang];
+
     return html`
       <div class="employee-list__table">
         <table>
           <thead>
             <tr class="employee-list__table--header">
-              ${this.columns.map((column) => html`<th>${column.label}</th>`)}
+              ${this.columns.map(
+                (column) => html`<th>${i18n[this.lang][column.labelKey]}</th>`
+              )}
             </tr>
             <tr></tr>
           </thead>
@@ -275,9 +283,7 @@ class EmployeeList extends LitElement {
                 )
               : html`
                   <tr>
-                    <td colspan="${this.columns.length}">
-                      Çalışan bulunamadı.
-                    </td>
+                    <td colspan="${this.columns.length}">${t.noUserFound}</td>
                   </tr>
                 `}
           </tbody>
@@ -287,18 +293,19 @@ class EmployeeList extends LitElement {
   }
 
   renderListView() {
+    const t = i18n[this.lang];
     return html`
       <div class="card-grid">
         ${this.employees.map(
           (employee) => html`
             <div class="card">
               <p><strong>${employee.firstName} ${employee.lastName}</strong></p>
-              <p>Phone: ${employee.phone}</p>
-              <p>Email: ${employee.email}</p>
-              <p>Departmant: ${employee.department}</p>
-              <p>Position: ${employee.position}</p>
-              <p>Date of Employment: ${employee.dateOfEmployment}</p>
-              <p>Date of Birth: ${employee.dateOfBirth}</p>
+              <p>${t.phone}: ${employee.phone}</p>
+              <p>${t.email}: ${employee.email}</p>
+              <p>${t.department}: ${employee.department}</p>
+              <p>${t.position}: ${employee.position}</p>
+              <p>${t.dateOfEmployment}: ${employee.dateOfEmployment}</p>
+              <p>${t.dateOfBirth}: ${employee.dateOfBirth}</p>
               <div class="card-grid___buttons">
                 <button>
                   <iconify-icon
@@ -324,13 +331,15 @@ class EmployeeList extends LitElement {
   }
 
   render() {
+    const t = i18n[this.lang];
+
     return html`
       <div class="employee-list__header">
-        <h3>Employee List</h3>
+        <h3>${t.employeeList}</h3>
         <div class="employee-list__header--right-bar">
           <input
             type="text"
-            placeholder="Search..."
+            placeholder=${t.search}
             @input=${this._handleSearch}
           />
           <button
