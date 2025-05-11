@@ -3,12 +3,15 @@ import {
   UPDATE_EMPLOYEE,
   DELETE_EMPLOYEE,
   SET_EMPLOYEES,
+  SET_PAGE,
 } from './actions.js';
 
 import {mockEmployees} from '../data/mock-employees.js';
 
 const initialState = {
   employees: mockEmployees,
+  currentPage: 1,
+  itemsPerPage: 10,
 };
 
 export const employeeReducer = (state = initialState, action) => {
@@ -37,6 +40,12 @@ export const employeeReducer = (state = initialState, action) => {
       return {
         ...state,
         employees: state.employees.filter((emp) => emp.id !== action.payload),
+      };
+
+    case SET_PAGE:
+      return {
+        ...state,
+        currentPage: action.payload,
       };
 
     default:

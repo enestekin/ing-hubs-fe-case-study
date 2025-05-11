@@ -2,6 +2,7 @@ export const ADD_EMPLOYEE = 'ADD_EMPLOYEE';
 export const UPDATE_EMPLOYEE = 'UPDATE_EMPLOYEE';
 export const DELETE_EMPLOYEE = 'DELETE_EMPLOYEE';
 export const SET_EMPLOYEES = 'SET_EMPLOYEES';
+export const SET_PAGE = 'SET_PAGE';
 
 export const setEmployees = (employees) => ({
   type: SET_EMPLOYEES,
@@ -21,4 +22,9 @@ export const updateEmployee = (employee) => ({
 export const deleteEmployee = (id) => ({
   type: DELETE_EMPLOYEE,
   payload: id,
+});
+
+export const setPage = (page) => ({
+  type: SET_PAGE,
+  payload: page,
 });

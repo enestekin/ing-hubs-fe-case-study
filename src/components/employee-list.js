@@ -1,7 +1,8 @@
 import {LitElement, html, css} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
 import {store} from '../store/index.js';
-import {deleteEmployee} from '../store/actions.js';
+import {deleteEmployee, setPage} from '../store/actions.js';
+import {getPaginatedEmployees, getTotalPages} from '../helpers/index.js';
 import './confirm-modal.js';
 
 class EmployeeList extends LitElement {
@@ -46,6 +47,35 @@ class EmployeeList extends LitElement {
       cursor: pointer;
       color: #ff9900;
     }
+
+    .pagination {
+      margin: 1rem 0;
+      gap: 0.3rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .pagination button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.2rem 0.4rem;
+      cursor: pointer;
+    }
+
+    .pagination .page-button.active {
+      background-color: #ff9900;
+      border-radius: 100%;
+      color: white;
+      font-weight: bold;
+    }
+
+    .pagination .nav-button.disabled {
+      background-color: #eee;
+      color: #aaa;
+      cursor: not-allowed;
+    }
   `;
 
   static properties = {
@@ -53,10 +83,16 @@ class EmployeeList extends LitElement {
     columns: {type: Array},
     showModal: {type: Boolean},
     selectedEmployee: {type: Object},
+    totalPages: {type: Number},
+    currentPage: {type: Number},
   };
 
   constructor() {
     super();
+    this._updateState();
+    this.showModal = false;
+    this.selectedEmployee = null;
+    this.unsubscribe = store.subscribe(() => this._updateState());
     this.columns = [
       {key: 'firstName', label: 'Adı'},
       {key: 'lastName', label: 'Soyadı'},
@@ -68,6 +104,18 @@ class EmployeeList extends LitElement {
       {key: 'position', label: 'Pozisyon'},
       {key: 'actions', label: 'İşlemler'},
     ];
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.unsubscribe();
+  }
+
+  _updateState() {
+    const state = store.getState();
+    this.employees = getPaginatedEmployees(state);
+    this.totalPages = getTotalPages(state);
+    this.currentPage = state.currentPage;
   }
 
   _handleDelete(id) {
@@ -89,6 +137,10 @@ class EmployeeList extends LitElement {
       store.dispatch(deleteEmployee(this.selectedEmployee.id));
     }
     this._cancelDelete();
+  }
+
+  goToPage(p) {
+    store.dispatch(setPage(p));
   }
 
   render() {
@@ -148,6 +200,45 @@ class EmployeeList extends LitElement {
                 `}
           </tbody>
         </table>
+      </div>
+
+      <div class="pagination">
+        <button
+          class="nav-button ${this.currentPage === 1 ? 'disabled' : ''}"
+          ?disabled=${this.currentPage === 1}
+          @click=${() => this.goToPage(this.currentPage - 1)}
+        >
+          <iconify-icon
+            icon="mdi:chevron-left"
+            width="16"
+            height="16"
+          ></iconify-icon>
+        </button>
+
+        ${[...Array(this.totalPages)].map(
+          (_, i) => html`
+            <button
+              class="page-button ${this.currentPage === i + 1 ? 'active' : ''}"
+              @click=${() => this.goToPage(i + 1)}
+            >
+              ${i + 1}
+            </button>
+          `
+        )}
+
+        <button
+          class="nav-button ${this.currentPage === this.totalPages
+            ? 'disabled'
+            : ''}"
+          ?disabled=${this.currentPage === this.totalPages}
+          @click=${() => this.goToPage(this.currentPage + 1)}
+        >
+          <iconify-icon
+            icon="mdi:chevron-right"
+            width="16"
+            height="16"
+          ></iconify-icon>
+        </button>
       </div>
 
       <confirm-modal
