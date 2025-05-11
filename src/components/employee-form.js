@@ -13,7 +13,8 @@ class EmployeeForm extends LitElement {
 
   static styles = css`
     div {
-      padding: 0 3rem;
+      padding: 0 3rem 1rem;
+      font-size: 13px;
     }
 
     h3 {
@@ -24,7 +25,7 @@ class EmployeeForm extends LitElement {
     form {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 7px;
       max-width: 400px;
       padding: 0 1rem;
       margin: 0 auto;
@@ -32,14 +33,24 @@ class EmployeeForm extends LitElement {
     label {
       font-weight: bold;
     }
-    input,
-    select {
-      padding: 0.5rem;
-      font-size: 1rem;
-    }
+
     button {
       padding: 0.5rem;
       cursor: pointer;
+    }
+
+    @media (min-width: 900px) {
+      div {
+        font-size: 1rem;
+      }
+      form {
+        gap: 1rem;
+      }
+      input,
+      select {
+        padding: 0.5rem;
+        font-size: 1rem;
+      }
     }
   `;
 
@@ -82,7 +93,7 @@ class EmployeeForm extends LitElement {
     const emp = this.employee;
     return html`
       <div>
-        <h2>${this.isEdit ? 'Edit' : 'Add'} Employee</h2>
+        <h3>${this.isEdit ? 'Edit' : 'Add'} Employee</h3>
 
         <form @submit="${this._handleSubmit}">
           <label>First Name</label>

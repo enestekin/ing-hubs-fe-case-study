@@ -17,7 +17,7 @@ class EmployeeList extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin: 0 3rem;
+      margin: 0 2rem;
     }
 
     .employee-list__header--right-bar {
@@ -28,12 +28,15 @@ class EmployeeList extends LitElement {
     .employee-list__table {
       background-color: #fff;
       border-radius: 5px;
-      margin: 0 3rem;
+      margin: 0 2rem;
+      overflow-x: auto;
+      font-size: 10px;
     }
 
     h3 {
       color: #ff9900;
       font-weight: 500;
+      font-size: 1rem;
     }
 
     table {
@@ -43,7 +46,7 @@ class EmployeeList extends LitElement {
 
     th,
     td {
-      padding: 1rem;
+      padding: 0.3rem;
       text-align: left;
       border-bottom: 1px solid #ddd;
       font-weight: normal;
@@ -128,6 +131,20 @@ class EmployeeList extends LitElement {
     }
 
     @media (min-width: 900px) {
+      .employee-list__table {
+        font-size: 1rem;
+        margin: 0 3rem;
+      }
+      .employee-list__header {
+        margin: 0 3rem;
+      }
+      h3 {
+        font-size: 1.5rem;
+      }
+      th,
+      td {
+        padding: 1rem;
+      }
       .card-grid {
         grid-template-columns: repeat(3, 1fr);
       }

@@ -29,6 +29,7 @@ class AppNavbar extends LitElement {
       align-items: center;
       background: #fff;
       padding: 0.5rem;
+      font-size: 13px;
     }
     a {
       text-decoration: none;
@@ -36,8 +37,14 @@ class AppNavbar extends LitElement {
     }
     div {
       display: flex;
+      align-items: center;
       gap: 1rem;
     }
+
+    @media (min-width: 900px) {
+      nav {
+        font-size: 1rem;
+      }
   `;
 
   render() {
@@ -50,7 +57,7 @@ class AppNavbar extends LitElement {
           <a href="/">ING</a>
           <div>
             <a href="/">Employees</a>
-            <a href="/add">Add New +</a>
+            <a href="/add">+ Add New</a>
             <button>TR|EN</button>
           </div>
         </nav>
