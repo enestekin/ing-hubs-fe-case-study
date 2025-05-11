@@ -18,6 +18,12 @@ class EmployeeList extends LitElement {
       align-items: center;
       margin: 0 3rem;
     }
+
+    .employee-list__header--right-bar {
+      display: flex;
+      align-items: center;
+    }
+
     .employee-list__table {
       background-color: #fff;
       border-radius: 5px;
@@ -296,7 +302,7 @@ class EmployeeList extends LitElement {
     return html`
       <div class="employee-list__header">
         <h3>Employee List</h3>
-        <div class="">
+        <div class="employee-list__header--right-bar">
           <input
             type="text"
             placeholder="Search..."
