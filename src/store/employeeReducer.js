@@ -5,6 +5,7 @@ import {
   SET_EMPLOYEES,
   SET_PAGE,
   SET_VIEW_MODE,
+  SET_SEARCH_QUERY,
 } from './actions.js';
 
 import {mockEmployees} from '../data/mock-employees.js';
@@ -14,6 +15,7 @@ const initialState = {
   currentPage: 1,
   itemsPerPage: 10,
   viewMode: 'table',
+  searchQuery: '',
 };
 
 export const employeeReducer = (state = initialState, action) => {
@@ -54,6 +56,12 @@ export const employeeReducer = (state = initialState, action) => {
       return {
         ...state,
         viewMode: action.payload,
+      };
+
+    case SET_SEARCH_QUERY:
+      return {
+        ...state,
+        searchQuery: action.payload,
       };
 
     default:

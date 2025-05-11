@@ -4,6 +4,7 @@ export const DELETE_EMPLOYEE = 'DELETE_EMPLOYEE';
 export const SET_EMPLOYEES = 'SET_EMPLOYEES';
 export const SET_PAGE = 'SET_PAGE';
 export const SET_VIEW_MODE = 'SET_VIEW_MODE';
+export const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY';
 
 export const setEmployees = (employees) => ({
   type: SET_EMPLOYEES,
@@ -33,4 +34,9 @@ export const setPage = (page) => ({
 export const setViewMode = (viewMode) => ({
   type: SET_VIEW_MODE,
   payload: viewMode,
+});
+
+export const setSearchQuery = (query) => ({
+  type: SET_SEARCH_QUERY,
+  payload: query,
 });

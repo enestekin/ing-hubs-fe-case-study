@@ -1,7 +1,12 @@
 import {LitElement, html, css} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
 import {store} from '../store/index.js';
-import {deleteEmployee, setPage, setViewMode} from '../store/actions.js';
+import {
+  deleteEmployee,
+  setPage,
+  setViewMode,
+  setSearchQuery,
+} from '../store/actions.js';
 import {getPaginatedEmployees, getTotalPages} from '../helpers/index.js';
 import './confirm-modal.js';
 
@@ -190,6 +195,10 @@ class EmployeeList extends LitElement {
     store.dispatch(setPage(p));
   }
 
+  handleSearch(e) {
+    store.dispatch(setSearchQuery(e.target.value));
+  }
+
   renderTableView() {
     return html`
       <div class="employee-list__table">
@@ -287,7 +296,12 @@ class EmployeeList extends LitElement {
     return html`
       <div class="employee-list__header">
         <h3>Employee List</h3>
-        <div>
+        <div class="">
+          <input
+            type="text"
+            placeholder="Search..."
+            @input=${this.handleSearch}
+          />
           <button
             @click=${() => store.dispatch(setViewMode('table'))}
             ?selected=${this.viewMode === 'table'}

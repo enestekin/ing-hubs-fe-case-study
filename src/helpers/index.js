@@ -1,9 +1,17 @@
+export const getFilteredEmployees = (state) => {
+  return state.employees.filter((employee) => {
+    return `${employee.firstName} ${employee.lastName}`
+      .toLowerCase()
+      .includes(state.searchQuery.toLowerCase());
+  });
+};
+
 export const getPaginatedEmployees = (state) => {
-  const allEmployees = state.employees;
+  const filtered = getFilteredEmployees(state);
   const start = (state.currentPage - 1) * state.itemsPerPage;
-  return allEmployees.slice(start, start + state.itemsPerPage);
+  return filtered.slice(start, start + state.itemsPerPage);
 };
 
 export const getTotalPages = (state) => {
-  return Math.ceil(state.employees.length / state.itemsPerPage);
+  return Math.ceil(getFilteredEmployees(state).length / state.itemsPerPage);
 };
