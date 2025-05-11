@@ -8,6 +8,7 @@ import {
   setSearchQuery,
 } from '../store/actions.js';
 import {getPaginatedEmployees, getTotalPages} from '../helpers/index.js';
+import {Router} from '@vaadin/router';
 import './confirm-modal.js';
 
 class EmployeeList extends LitElement {
@@ -197,12 +198,16 @@ class EmployeeList extends LitElement {
     this._cancelDelete();
   }
 
-  goToPage(p) {
+  _goToPage(p) {
     store.dispatch(setPage(p));
   }
 
-  handleSearch(e) {
+  _handleSearch(e) {
     store.dispatch(setSearchQuery(e.target.value));
+  }
+
+  _handleEdit(id) {
+    Router.go(`/edit/${id}`);
   }
 
   renderTableView() {
@@ -231,11 +236,12 @@ class EmployeeList extends LitElement {
                           `
                         )}
                       <td>
-                        <button title="Düzenle">
+                        <button>
                           <iconify-icon
                             icon="mdi:pencil"
                             width="20"
                             height="20"
+                            @click="${() => this._handleEdit(employee.id)}"
                           ></iconify-icon>
                         </button>
                         <button @click="${() => this._confirmDelete(employee)}">
@@ -281,6 +287,7 @@ class EmployeeList extends LitElement {
                     icon="mdi:pencil"
                     width="20"
                     height="20"
+                    @click="${() => this._handleEdit(employee.id)}"
                   ></iconify-icon>
                 </button>
                 <button @click="${() => this._confirmDelete(employee)}">
@@ -306,7 +313,7 @@ class EmployeeList extends LitElement {
           <input
             type="text"
             placeholder="Search..."
-            @input=${this.handleSearch}
+            @input=${this._handleSearch}
           />
           <button
             @click=${() => store.dispatch(setViewMode('table'))}
@@ -338,7 +345,7 @@ class EmployeeList extends LitElement {
         <button
           class="nav-button ${this.currentPage === 1 ? 'disabled' : ''}"
           ?disabled=${this.currentPage === 1}
-          @click=${() => this.goToPage(this.currentPage - 1)}
+          @click=${() => this._goToPage(this.currentPage - 1)}
         >
           <iconify-icon
             icon="mdi:chevron-left"
@@ -351,7 +358,7 @@ class EmployeeList extends LitElement {
           (_, i) => html`
             <button
               class="page-button ${this.currentPage === i + 1 ? 'active' : ''}"
-              @click=${() => this.goToPage(i + 1)}
+              @click=${() => this._goToPage(i + 1)}
             >
               ${i + 1}
             </button>
@@ -363,7 +370,7 @@ class EmployeeList extends LitElement {
             ? 'disabled'
             : ''}"
           ?disabled=${this.currentPage === this.totalPages}
-          @click=${() => this.goToPage(this.currentPage + 1)}
+          @click=${() => this._goToPage(this.currentPage + 1)}
         >
           <iconify-icon
             icon="mdi:chevron-right"

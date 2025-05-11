@@ -1,9 +1,11 @@
 import {LitElement, html, css} from 'lit';
 import {store} from '../store/index.js';
-import {addEmployee} from '../store/actions.js';
+import {addEmployee, updateEmployee} from '../store/actions.js';
+import {validateEmployee} from '../helpers/index.js';
 import {Router} from '@vaadin/router';
+import '../components/confirm-modal.js';
 
-class EmployeeAdd extends LitElement {
+class EmployeeForm extends LitElement {
   static properties = {
     employee: {type: Object},
     isEdit: {type: Boolean},
@@ -23,8 +25,9 @@ class EmployeeAdd extends LitElement {
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      max-width: 500px;
-      padding-top: 1rem;
+      max-width: 400px;
+      padding: 0 1rem;
+      margin: 0 auto;
     }
     label {
       font-weight: bold;
@@ -36,41 +39,57 @@ class EmployeeAdd extends LitElement {
     }
     button {
       padding: 0.5rem;
+      cursor: pointer;
     }
   `;
 
   constructor() {
     super();
     this.employee = {};
+    this.isEdit = false;
+    this.showModal = false;
   }
 
-  handleInput(e) {
+  _handleInput(e) {
     this.employee = {
       ...this.employee,
       [e.target.name]: e.target.value,
     };
   }
 
-  handleSubmit(e) {
+  _handleSubmit(e) {
     e.preventDefault();
 
-    const id = Date.now().toString();
-    store.dispatch(addEmployee({...this.employee, id}));
-    Router.go('/');
+    if (this.isEdit) {
+      this.showModal = true;
+      this.requestUpdate();
+    } else {
+      const errors = validateEmployee(
+        this.employee,
+        store.getState().employees
+      );
+      if (errors.length) {
+        alert(errors.join('\n'));
+        return;
+      }
+      const id = Date.now().toString();
+      store.dispatch(addEmployee({...this.employee, id}));
+      Router.go('/');
+    }
   }
 
   render() {
     const emp = this.employee;
     return html`
       <div>
-        <h3>Add Employee</h3>
+        <h2>${this.isEdit ? 'Edit' : 'Add'} Employee</h2>
 
-        <form @submit="${this.handleSubmit}">
+        <form @submit="${this._handleSubmit}">
           <label>First Name</label>
           <input
             name="firstName"
             .value=${emp.firstName || ''}
-            @input=${this.handleInput}
+            @input=${this._handleInput}
             required
           />
 
@@ -78,7 +97,7 @@ class EmployeeAdd extends LitElement {
           <input
             name="lastName"
             .value=${emp.lastName || ''}
-            @input=${this.handleInput}
+            @input=${this._handleInput}
             required
           />
 
@@ -87,7 +106,7 @@ class EmployeeAdd extends LitElement {
             type="date"
             name="dateOfEmployment"
             .value=${emp.dateOfEmployment || ''}
-            @input=${this.handleInput}
+            @input=${this._handleInput}
             required
           />
 
@@ -96,7 +115,7 @@ class EmployeeAdd extends LitElement {
             type="date"
             name="dateOfBirth"
             .value=${emp.dateOfBirth || ''}
-            @input=${this.handleInput}
+            @input=${this._handleInput}
             required
           />
 
@@ -104,7 +123,7 @@ class EmployeeAdd extends LitElement {
           <input
             name="phone"
             .value=${emp.phone || ''}
-            @input=${this.handleInput}
+            @input=${this._handleInput}
             required
           />
 
@@ -113,7 +132,7 @@ class EmployeeAdd extends LitElement {
             type="email"
             name="email"
             .value=${emp.email || ''}
-            @input=${this.handleInput}
+            @input=${this._handleInput}
             required
           />
 
@@ -121,7 +140,7 @@ class EmployeeAdd extends LitElement {
           <select
             name="department"
             .value=${emp.department || ''}
-            @change=${this.handleInput}
+            @change=${this._handleInput}
             required
           >
             <option value="">Select</option>
@@ -133,7 +152,7 @@ class EmployeeAdd extends LitElement {
           <select
             name="position"
             .value=${emp.position || ''}
-            @change=${this.handleInput}
+            @change=${this._handleInput}
             required
           >
             <option value="">Select</option>
@@ -142,11 +161,26 @@ class EmployeeAdd extends LitElement {
             <option value="Senior">Senior</option>
           </select>
 
-          <button type="submit">Add Employee</button>
+          <button>${this.isEdit ? 'Update' : 'Create'} Employee</button>
         </form>
       </div>
+
+      <confirm-modal
+        .open=${this.showModal}
+        .message="Selected employee record of ${this.employee
+          ? `${this.employee.firstName} ${this.employee.lastName} will be edited`
+          : ''}"
+        @cancel=${() => {
+          this.showModal = false;
+          this.requestUpdate();
+        }}
+        @proceed=${() => {
+          store.dispatch(updateEmployee(this.employee));
+          Router.go('/');
+        }}
+      ></confirm-modal>
     `;
   }
 }
 
-customElements.define('employee-add', EmployeeAdd);
+customElements.define('employee-form', EmployeeForm);

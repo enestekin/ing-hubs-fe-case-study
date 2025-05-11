@@ -1,9 +1,9 @@
 import {LitElement, html} from 'lit';
-import '../components/employee-add.js';
+import '../components/employee-form.js';
 
 class AddView extends LitElement {
   render() {
-    return html`<employee-add></employee-add>`;
+    return html`<employee-form></employee-form>`;
   }
 }
 
