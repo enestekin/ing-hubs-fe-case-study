@@ -28,7 +28,7 @@ export const tr = {
   editEmployee: 'Çalışanı Düzenle',
   save: 'Kaydet',
   deleteConfirmationMessage: (firstName, lastName) =>
-    `${firstName} ${lastName} güncellenecek.`,
+    `${firstName} ${lastName} silinecek.`,
   actions: 'İşlemler',
   noUserFound: 'Kullanıcı bulunamadı',
   search: 'Ara...',

@@ -190,7 +190,7 @@ class EmployeeForm extends LitElement {
 
       <confirm-modal
         .open=${this.showModal}
-        .message=${t.deleteConfirmationMessage(
+        .message=${t.editConfirmationMessage(
           this.employee.firstName,
           this.employee.lastName
         )}

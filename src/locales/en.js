@@ -28,8 +28,10 @@ export const en = {
   addEmployee: 'Add Employee',
   editEmployee: 'Edit Employee',
   save: 'Save',
-  deleteConfirmationMessage: (firstName, lastName) =>
+  editConfirmationMessage: (firstName, lastName) =>
     `${firstName} ${lastName} will be edited.`,
+  deleteConfirmationMessage: (firstName, lastName) =>
+    `${firstName} ${lastName} will be deleted.`,
   actions: 'Actions',
   noUserFound: 'No user found',
   search: 'Search...',

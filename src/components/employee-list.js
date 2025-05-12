@@ -409,9 +409,12 @@ class EmployeeList extends LitElement {
 
       <confirm-modal
         .open="${this.showModal}"
-        .message="Selected employee record of ${this.selectedEmployee
-          ? `${this.selectedEmployee.firstName} ${this.selectedEmployee.lastName} will be deleted`
-          : ''}"
+        .message=${this.selectedEmployee
+          ? t.deleteConfirmationMessage(
+              this.selectedEmployee.firstName,
+              this.selectedEmployee.lastName
+            )
+          : ''}
         @cancel="${this._cancelDelete}"
         @proceed="${this._proceedDelete}"
       ></confirm-modal>
