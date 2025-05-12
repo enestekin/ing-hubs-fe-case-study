@@ -29,7 +29,7 @@ export const en = {
   editEmployee: 'Edit Employee',
   save: 'Save',
   deleteConfirmationMessage: (firstName, lastName) =>
-    `${firstName} ${lastName} will be deleted. Are you sure?`,
+    `${firstName} ${lastName} will be edited.`,
   actions: 'Actions',
   noUserFound: 'No user found',
   search: 'Search...',
